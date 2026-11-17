@@ -1,0 +1,29 @@
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Docker
+docker-compose.override.yml
+mysql-data/
+data/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Database dumps
+*.sql
+*.sql.gz
