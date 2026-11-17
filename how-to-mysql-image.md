@@ -49,5 +49,21 @@ What the script does:
 
 - Loads the dump into the `sg_dev` database. **It drops and recreates `sg_dev`**, so any existing data in it is lost.
 - Skips the dump's `mysql` system database section (use `--include-system` to load it anyway; not recommended on MySQL 5.7).
-- Creates `'sg_dev'@'localhost'` with the `sg_dev_pwd` password and `ALL PRIVILEGES` on `sg_dev.*`. It is safe to re-run.
-- Note: `'sg_dev'@'localhost'` only works from inside the container, e.g. `docker exec -it mysql57 mysql -usg_dev -p sg_dev`. From the host, connect as `root`.
+- Creates `'sg_dev'@'localhost'` and `'sg_dev'@'%'` with the `sg_dev_pwd` password and `ALL PRIVILEGES` on `sg_dev.*`. It is safe to re-run.
+- `'sg_dev'@'localhost'` only matches connections made inside the container (`docker exec -it mysql57 mysql -usg_dev -p sg_dev`). `'sg_dev'@'%'` is what lets apps on the host (e.g. Java) connect through the published port 3306.
+
+Connect from a Java app running on the host
+
+```
+jdbc:mysql://127.0.0.1:3306/sg_dev?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf8
+user: sg_dev
+password: value of sg_dev_pwd
+```
+
+- Driver: MySQL Connector/J 5.1.x (`com.mysql.jdbc.Driver`) or 8.x (`com.mysql.cj.jdbc.Driver`; may need `&serverTimezone=UTC`).
+- MySQL has no per-user default database: the `/sg_dev` in the URL is what makes it the default schema (CLI: `mysql -usg_dev -p sg_dev`).
+- `'%'` allows any client address. Fine for a local test container; to restrict it, publish the port on loopback only (`-p 127.0.0.1:3306:3306`).
+
+Notes
+
+- GlassFish admin console (container `glassfish3`) is served over plain HTTP: use `http://localhost:4848`, not `https://`.

@@ -27,3 +27,6 @@ data/
 # Database dumps
 *.sql
 *.sql.gz
+
+# Generated image build input (contains data)
+initdb/
