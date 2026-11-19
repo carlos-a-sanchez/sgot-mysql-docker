@@ -2,7 +2,7 @@
 To load the image from DockerHub
 
 The dump comes from a server with case-insensitive table names, so the
-`--lower_case_table_names=1` flag is required (it must be set when the container is created).
+`--lower_case_table_names=1` flag is required to load it (it must be set when the container is created). After loading, recreate the container with `--lower_case_table_names=0 --sql-mode=ORACLE` for the Oracle-like behavior; see README.md (Deploy, step 6) for the full procedure and the volume needed to keep the data.
 
 ```bash
 docker run -d \

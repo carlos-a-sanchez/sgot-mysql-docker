@@ -117,6 +117,12 @@ def main():
         cur.execute("ALTER USER 'sg_dev'@%s IDENTIFIED BY %s", (host, pwd))
         cur.execute(f"GRANT ALL PRIVILEGES ON `sg_dev`.* TO 'sg_dev'@'{host}'")
         print(f"User 'sg_dev'@'{host}' created with ALL PRIVILEGES on `sg_dev`.*")
+    app_pwd = os.getenv("sgapp_pwd")
+    if app_pwd:
+        cur.execute("CREATE USER IF NOT EXISTS 'sgapp'@'%%' IDENTIFIED BY %s", (app_pwd,))
+        cur.execute("ALTER USER 'sgapp'@'%%' IDENTIFIED BY %s", (app_pwd,))
+        cur.execute("GRANT ALL ON `sg_dev`.* TO 'sgapp'@'%'")
+        print("User 'sgapp'@'%' created with ALL PRIVILEGES on `sg_dev`.*")
     cur.execute("FLUSH PRIVILEGES")
     conn.close()
     print(f"Done: {count} statements executed from {src.name}")
